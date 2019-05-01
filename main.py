@@ -1,4 +1,5 @@
 import gspread
+from gspread.exceptions import SpreadsheetNotFound
 from oauth2client.service_account import ServiceAccountCredentials
 
 
@@ -13,10 +14,15 @@ creds = ServiceAccountCredentials.from_json_keyfile_name(
     scope
 )
 client = gspread.authorize(creds)
-db_sheet = client.create('Simple Sheet DB')
+
+try:
+    db_sheet = client.open('Simple Sheet DB')
+except SpreadsheetNotFound:
+    db_sheet = client.create('Simple Sheet DB')
+
 db_sheet.share(
     'you.email@here.com',
     perm_type='user',
-    role='writer'
+    role='reader'
 )
 worksheet = db_sheet.get_worksheet(0)
