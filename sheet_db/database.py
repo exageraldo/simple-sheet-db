@@ -1,6 +1,7 @@
 import gspread
-from gspread.exceptions import SpreadsheetNotFound, WorksheetNotFound
+from gspread.exceptions import SpreadsheetNotFound
 from oauth2client.service_account import ServiceAccountCredentials
+from sheet_db.table import SheetTable
 
 
 class SheetDB(object):
@@ -56,3 +57,11 @@ class SheetDB(object):
                     perm_type='user',
                     role='reader'
                 )
+
+    def work_on(self, table_name, upsert=False):
+        table = SheetTable().get_table(
+            table_name,
+            self.db_sheet,
+            upsert
+        )
+        return table
